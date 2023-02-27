@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Building List</h2>
+  <ul>
+    {% for building in buildings %}
+      <li>{{ building.name }}</li>
+    {% empty %}
+      <li>No buildings found.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

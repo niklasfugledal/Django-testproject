@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>My Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #mapid {
+            height: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    {% extends 'base.html' %}
+
+{% block content %}
+  <h2>Welcome to My Building App</h2>
+  <a href="{% url 'create_building' %}">Create Building</a>
+  <a href="{% url 'building_list' %}">Building List</a>
+{% endblock %}
+
+    <form id="building-form" method="POST">
+        {% csrf_token %}
+        <label for="building-name">Building name:</label>
+        <input type="text" id="building-name" name="name">
+        <input type="hidden" id="geometry" name="geometry">
+        <input type="submit" value="Create building">
+        <button id="cancel-building">Cancel</button>
+    </form>
+    <div id="mapid"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('mapid').setView([51.505, -0.09], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+            maxZoom: 18,
+        }).addTo(map);
+
+        map.on('click', function (e) {
+            var latlng = e.latlng;
+            var marker = L.marker(latlng).addTo(map);
+
+            var polygon = L.polygon([latlng]).addTo(map);
+
+            var name = prompt("Enter building name:");
+            var geometry = JSON.stringify(polygon.toGeoJSON());
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/create_building/');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}'); // Add this line
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    alert('Building created!');
+                } else {
+                    alert('Error creating building.');
+                }
+            };
+            xhr.send('name=' + name + '&geometry=' + geometry);
+
+        });
+        function createBuildingPopup(e) {
+            var popup = L.popup()
+                .setLatLng(e.latlng)
+                .setContent(buildingPopupContent)
+                .openOn(map);
+
+            var createBuildingButton = document.getElementById('create-building');
+            var cancelBuildingButton = document.getElementById('cancel-building'); // add this line
+
+            createBuildingButton.addEventListener('click', function () {
+                var name = document.getElementById('building-name').value;
+                var geometry = JSON.stringify(e.latlng);
+                createBuilding(name, geometry);
+                map.closePopup(popup);
+            });
+
+            cancelBuildingButton.addEventListener('click', function () { // add this block
+                map.closePopup(popup);
+                if (buildingLayer) {
+                    map.removeLayer(buildingLayer);
+                }
+            });
+        }
+        
+    </script>
+</body>
+
+</html>
