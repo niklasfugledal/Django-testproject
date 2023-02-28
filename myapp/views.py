@@ -1,4 +1,3 @@
-
 # Create your views here.
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
@@ -14,6 +13,8 @@ def home(request):
         return render(request, 'leaflet_map.html')
     else:
         return render(request, 'home.html')
+
+
 
 def create_building(request):
     if request.method == 'POST':

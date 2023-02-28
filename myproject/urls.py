@@ -20,6 +20,6 @@ from myapp.views import create_building, building_list, home
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
-    path('create-building/', create_building, name='create_building'),
     path('building-list/', building_list, name='building_list'),
+    path('create-building/', create_building, name='create_building'),
 ]

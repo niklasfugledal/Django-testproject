@@ -1,11 +1,21 @@
 <!DOCTYPE html>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha384-jPXRmvOjW6+PjrxyYq3JZvNRdld04s8sTxyT48qwJzMGv+2QyrW8IxEvIWrW+w+" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha384-HZEVo6mK93hQZcJ+DWaDHRxz61IzYm6UyF6t5sc5M5P5Fe+14pXLe1zNgBhC4H4O" crossorigin=""></script>
 <html lang="en">
 <head>
+    {% load static %}
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="{% static 'leaflet/leaflet.css' %}" />
+
+<!-- Leaflet JavaScript -->
+<script src="{% static 'leaflet/leaflet.js' %}"></script>
     <meta charset="UTF-8">
     <title>{% block title %}My Building App{% endblock %}</title>
 </head>
 <body>
     <header>
+        
         <nav>
             <ul>
                 <li><a href="/">Home</a></li>
